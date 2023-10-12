@@ -22,11 +22,22 @@ export default class RabbitManager implements RabbitManagerContract {
   /**
    * The channel
    */
-  private $channelPromise: Promise<Channel>
-  private $channel: Channel
+  private $channelPromise: Promise<Channel> | undefined
+  private $channel: Channel | undefined
+
+  private onCreateChannelListenerss: Array<Function | null> = []
 
   constructor(rabbitConfig: RabbitConfig) {
     this.rabbitConnection = new RabbitConnection(rabbitConfig)
+  }
+
+  public addCreateChannelListener(listener: Function) : number{
+    this.onCreateChannelListenerss.push(listener)
+    return this.onCreateChannelListenerss.length - 1
+  }
+
+  public removeCreateChannelListener(id: number) {
+     this.onCreateChannelListenerss[id] = null
   }
 
   /**
@@ -54,15 +65,40 @@ export default class RabbitManager implements RabbitManagerContract {
    */
   public async getChannel() {
     const connection = await this.rabbitConnection.getConnection()
+    if(!connection) {
+      return undefined
+    }
 
     if (!this.hasChannel || !this.$channel) {
+      console.log('I am here')
       if (!this.$channelPromise) {
         this.$channelPromise =
           connection.createChannel() as unknown as Promise<Channel>
       }
       this.$channel = await this.$channelPromise
       this.hasChannel = true
+
+      for(let i=0; i<this.onCreateChannelListenerss.length; i++) {
+        const listener = this.onCreateChannelListenerss[i]
+        if(listener !== null) {
+          listener()
+        }
+      }
+
+      this.$channel.on('error', ()=>{
+        console.log('Channel error')
+        this.hasChannel = false
+      })
+
+      this.$channel.on('close', ()=>{
+        console.log('Channel close')
+        this.hasChannel = false
+        this.$channelPromise = undefined
+        this.$channel = undefined
+      })
     }
+
+    console.log(this.hasChannel)
 
     return this.$channel
   }
@@ -75,6 +111,11 @@ export default class RabbitManager implements RabbitManagerContract {
    */
   public async assertQueue(queueName: string, options?: Options.AssertQueue) {
     const channel = await this.getChannel()
+
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
 
     return channel.assertQueue(queueName, options)
   }
@@ -92,6 +133,12 @@ export default class RabbitManager implements RabbitManagerContract {
     options?: Options.Publish
   ) {
     const channel = await this.getChannel()
+    if(!channel) {
+      console.log('Could not connect')
+      return false
+    }
+
+    console.log('sending to queue2')
 
     return channel.sendToQueue(queueName, this.toBuffer(content), options)
   }
@@ -109,6 +156,10 @@ export default class RabbitManager implements RabbitManagerContract {
     options?: Options.AssertExchange
   ) {
     const channel = await this.getChannel()
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
 
     return channel.assertExchange(exchangeName, type, options)
   }
@@ -127,6 +178,11 @@ export default class RabbitManager implements RabbitManagerContract {
   ) {
     const channel = await this.getChannel()
 
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
+
     return channel.bindQueue(queueName, exchangeName, pattern)
   }
 
@@ -144,6 +200,11 @@ export default class RabbitManager implements RabbitManagerContract {
   ) {
     const channel = await this.getChannel()
 
+    if(!channel) {
+      console.log('Could not connect')
+      return false
+    }
+
     return channel.publish(exchangeName, routingKey, this.toBuffer(content))
   }
 
@@ -152,6 +213,11 @@ export default class RabbitManager implements RabbitManagerContract {
    */
   public async ackAll() {
     const channel = await this.getChannel()
+
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
 
     return channel.ackAll()
   }
@@ -163,6 +229,11 @@ export default class RabbitManager implements RabbitManagerContract {
    */
   public async nackAll(requeue: boolean) {
     const channel = await this.getChannel()
+
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
 
     return channel.nackAll(requeue)
   }
@@ -178,6 +249,11 @@ export default class RabbitManager implements RabbitManagerContract {
     onMessage: (msg: MessageContract<T>) => void | Promise<void>
   ) {
     const channel = await this.getChannel()
+
+    if(!channel) {
+      console.log('Could not connect')
+      return
+    }
 
     return channel.consume(queueName, (message) => {
       const messageInstance = new Message<T>(channel, message)

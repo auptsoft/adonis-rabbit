@@ -14,15 +14,19 @@ declare module '@ioc:Adonis/Addons/Rabbit' {
      */
     hasChannel: boolean
 
+    addCreateChannelListener(listener: Function) : number
+
+    removeCreateChannelListener(id: number)
+
     /**
      * Returns the connection
      */
-    getConnection(): Promise<Connection>
+    getConnection(): Promise<Connection | undefined>
 
     /**
      * Returns the channel
      */
-    getChannel(): Promise<Channel>
+    getChannel(): Promise<Channel | undefined>
 
     /**
      * Creates a queue if doesn't exist
@@ -33,7 +37,7 @@ declare module '@ioc:Adonis/Addons/Rabbit' {
     assertQueue(
       queueName: string,
       options?: Options.AssertQueue
-    ): Promise<Replies.AssertQueue>
+    ): Promise<Replies.AssertQueue | undefined>
 
     /**
      * Send the message to the queue
@@ -59,7 +63,7 @@ declare module '@ioc:Adonis/Addons/Rabbit' {
       exchangeName: string,
       type: string,
       options?: Options.AssertExchange
-    ): Promise<Replies.AssertExchange>
+    ): Promise<Replies.AssertExchange | undefined>
 
     /**
      * Binds a queue and an exchange
@@ -72,7 +76,7 @@ declare module '@ioc:Adonis/Addons/Rabbit' {
       queueName: string,
       exchangeName: string,
       pattern?
-    ): Promise<Replies.Empty>
+    ): Promise<Replies.Empty | undefined>
 
     /**
      * Sends a message to an exchange
@@ -108,7 +112,7 @@ declare module '@ioc:Adonis/Addons/Rabbit' {
     consumeFrom<T extends object = any>(
       queueName: string,
       onMessage: (msg: MessageContract<T>) => void | Promise<void>
-    ): Promise<Replies.Consume>
+    ): Promise<Replies.Consume | undefined>
 
     /**
      * Closes the channel

@@ -11,8 +11,8 @@ export default class RabbitConnection {
   /**
    * The connection
    */
-  private $connection: Connection
-  private $connectionPromise: Promise<Connection>
+  private $connection: Connection | undefined
+  private $connectionPromise: Promise<Connection> | undefined
 
   /**
    * The credentials
@@ -110,16 +110,29 @@ export default class RabbitConnection {
    * Returns the connection
    */
   public async getConnection() {
-    if (!this.$connection) {
-      if (!this.$connectionPromise) {
-        this.$connectionPromise = connect(
-          this.url
-        ) as unknown as Promise<Connection>
-      }
-      this.$connection = await this.$connectionPromise
-    }
+    try {
+      if (!this.$connection) {
+        if (!this.$connectionPromise) {
+          this.$connectionPromise = connect(
+            this.url
+          ) as unknown as Promise<Connection>
+        }
+        this.$connection = await this.$connectionPromise
 
-    return this.$connection
+        this.$connection.on('close', () => {
+          // console.log('connection closed')
+          this.$connection = undefined
+          this.$connectionPromise = undefined
+        })
+      }
+
+      return this.$connection
+    } catch (e) {
+      console.log(e)
+      this.$connection = undefined
+      this.$connectionPromise = undefined
+      return undefined
+    }
   }
 
   /**
@@ -127,7 +140,7 @@ export default class RabbitConnection {
    */
   public async closeConnection() {
     if (this.hasConnection) {
-      await this.$connection.close()
+      await this.$connection?.close()
       this.hasConnection = false
     }
   }
