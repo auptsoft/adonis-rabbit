@@ -3,7 +3,7 @@ import {
   MessageContract,
   RabbitConfig,
   RabbitManagerContract,
-} from '@ioc:Adonis/Addons/Rabbit'
+} from '@adonis/addons/rabbit'
 import RabbitConnection from '../RabbitConnection'
 import Message from '../Messsage'
 import safeStringify from '../Utils/safeStringify'

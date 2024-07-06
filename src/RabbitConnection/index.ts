@@ -1,5 +1,5 @@
 import { connect, Connection } from 'amqplib'
-import { RabbitConfig } from '@ioc:Adonis/Addons/Rabbit'
+import { RabbitConfig } from '@adonis/addons/rabbit'
 import InvalidRabbitConfigException from '../Exceptions/InvalidRabbitConfigException'
 
 export default class RabbitConnection {

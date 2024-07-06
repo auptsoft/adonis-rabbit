@@ -1,5 +1,5 @@
 import { Connection } from 'amqplib';
-import { RabbitConfig } from '@ioc:Adonis/Addons/Rabbit';
+import { RabbitConfig } from '@adonis/addons/rabbit';
 export default class RabbitConnection {
     private readonly rabbitConfig;
     hasConnection: boolean;

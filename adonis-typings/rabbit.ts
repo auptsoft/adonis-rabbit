@@ -1,4 +1,4 @@
-declare module '@ioc:Adonis/Addons/Rabbit' {
+declare module '@adonis/addons/rabbit' {
   import {
     Channel,
     Connection,

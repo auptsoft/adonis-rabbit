@@ -9,10 +9,10 @@ class RabbitProvider {
         this.app = app;
     }
     register() {
-        this.app.container.singleton('Adonis/Addons/Rabbit', () => {
-            const rabbitConfig = this.app.container
-                .use('Adonis/Core/Config')
-                .get('rabbit', {});
+        this.app.container.singleton('rabbit', async () => {
+            const config = await this.app.container
+                .make('config');
+            const rabbitConfig = config.get('rabbit', {});
             return new RabbitManager_1.default(rabbitConfig);
         });
     }
@@ -21,7 +21,7 @@ class RabbitProvider {
     async ready() {
     }
     async shutdown() {
-        const Rabbit = this.app.container.use('Adonis/Addons/Rabbit');
+        const Rabbit = await this.app.container.make('rabbit');
         await Rabbit.closeChannel();
         await Rabbit.closeConnection();
     }

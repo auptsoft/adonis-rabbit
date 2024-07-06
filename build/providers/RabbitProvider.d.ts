@@ -1,8 +1,7 @@
-/// <reference types="@adonisjs/application/build/adonis-typings" />
-import { ApplicationContract } from '@ioc:Adonis/Core/Application';
+import { ApplicationService } from './../node_modules/@adonisjs/core/build/src/types.d';
 export default class RabbitProvider {
-    protected app: ApplicationContract;
-    constructor(app: ApplicationContract);
+    protected app: ApplicationService;
+    constructor(app: ApplicationService);
     register(): void;
     boot(): Promise<void>;
     ready(): Promise<void>;

@@ -1,5 +1,5 @@
 import { Channel, ConsumeMessage } from 'amqplib';
-import { MessageContract } from '@ioc:Adonis/Addons/Rabbit';
+import { MessageContract } from '@adonis/addons/rabbit';
 export default class Message<T> implements MessageContract {
     private $channel;
     message: ConsumeMessage;

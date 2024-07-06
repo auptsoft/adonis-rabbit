@@ -1,5 +1,5 @@
 import { Channel, ConsumeMessage } from 'amqplib'
-import { MessageContract } from '@ioc:Adonis/Addons/Rabbit'
+import { MessageContract } from '@adonis/addons/rabbit'
 import NullMessageException from '../Exceptions/NullMessageException'
 
 export default class Message<T> implements MessageContract {

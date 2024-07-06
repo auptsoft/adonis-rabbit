@@ -1,5 +1,5 @@
 import { Channel, Options } from 'amqplib';
-import { MessageContract, RabbitConfig, RabbitManagerContract } from '@ioc:Adonis/Addons/Rabbit';
+import { MessageContract, RabbitConfig, RabbitManagerContract } from '@adonis/addons/rabbit';
 export default class RabbitManager implements RabbitManagerContract {
     private readonly rabbitConnection;
     hasChannel: boolean;
