@@ -20,7 +20,7 @@
     "lint": "eslint . --ext=.ts --fix"
   },
   "devDependencies": {
-    "@adonisjs/core": "^6.12.1",
+    "@adonisjs/core": "^6.12.0",
     "adonis-preset-ts": "^1.0.4",
     "copyfiles": "^2.4.0",
     "eslint": "^7.11.0",

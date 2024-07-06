@@ -54,7 +54,7 @@
   dependencies:
     "@poppinss/utils" "^6.7.3"
 
-"@adonisjs/core@^6.12.1":
+"@adonisjs/core@^6.12.0":
   version "6.12.1"
   resolved "https://registry.npmjs.org/@adonisjs/core/-/core-6.12.1.tgz"
   integrity sha512-SO3RoLw5KWZH2zVOFFAt9IRsbWiis5fycu1LaYCqau6YhiLWu14wgT+TAnWdr/WbsFm7eS1ojrC5kD/muu5S6Q==
